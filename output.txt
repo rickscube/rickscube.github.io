@@ -1,0 +1,315 @@
+Given:
+
+information from URL 1:
+Bachelor of Science in Computer Science + Mathematics (CSE)
+1. Core Requirements: 
+CSE 1301	Introduction to Computer Science	(3 credits)
+CSE 2400	Logic and Discrete Mathematics **	(3 credits)
+CSE 2407	Data Structures and Algorithms	(3 credits)
+CSE 3407	Analysis of Algorithms	(3 credits)
+MATH 1510	Calculus I **	(3 credits)
+MATH 1520	Calculus II **	(3 credits)
+MATH 2130	Calculus III **	(3 credits)
+MATH 3010 Foundations for Higher Mathematics ** or MATH 3015 Foundations for Higher Mathematics With Writing **	(3 credits)
+MATH 3300	Matrix Algebra **	(3 credits)
+SDS 3020 Elementary to Intermediate Statistics and Data Analysis or SDS 3030 Statistics for Data Science I or ESE 3260 Probability and Statistics for Engineering	(3 credits)
+Total Units	30
+
+2. electives:
+Electives
+Seven upper-level courses from Math or Computer Science & Engineering can be chosen from the approved list, with the following caveats:
+
+At least three courses must be taken from CSE and at least three courses must be taken from Math.
+At most one preapproved course from outside both departments can be selected.
+CSE 4000 or CSE 4001 Independent Study may be taken for a maximum of 3 units and must be approved by a CS+Math review committee.
+For each of the following pairs of electives, students may count one as an elective toward the major but not both:
+CSE 2107 Introduction to Data Science or BME 4400 Biomedical Data Science
+CSE 4107 Introduction to Machine Learning or ESE 4170 Introduction to Machine Learning and Pattern Classification
+CSE 4109 Introduction to AI for Health or CSE 5310 AI for Health
+MATH 4560 Topics in Financial Mathematics or ESE 4270 Financial Mathematic
+
+Computer Science & Engineering
+Course List
+Code	Title	Units
+CSE 2107	Introduction to Data Science	3
+CSE 3401	Parallel and Sequential Algorithms	3
+CSE 4061	Text Mining	3
+CSE 4101	AI and Society	3
+CSE 4102	Introduction to Artificial Intelligence	3
+CSE 4106	Data Science for Complex Networks	3
+CSE 4107	Introduction to Machine Learning	3
+CSE 4109	Introduction to AI for Health	3
+CSE 4207	Cloud Computing with Big Data Applications	3
+CSE 4402	Introduction to Cryptography	3
+CSE 4470	Introduction to Formal Languages and Automata	3
+CSE 4507	Introduction to Visualization	3
+CSE 4608	Introduction to Quantum Computing	3
+CSE 5100	Deep Reinforcement Learning	3
+CSE 5103	Theory of Artificial Intelligence and Machine Learning	3
+CSE 5104	Data Mining	3
+CSE 5105	Bayesian Methods in Machine Learning	3
+CSE 5106	Multi-Agent Systems	3
+CSE 5107	Machine Learning	3
+CSE 5108	Human-in-the-Loop Computation	3
+CSE 5270	Natural Language Processing	3
+CSE 5313	Coding and Information Theory for Data Science	3
+CSE 5310	AI for Health	3
+CSE 5401	Advanced Algorithms	3
+CSE 5403	Algorithms for Nonlinear Optimization	3
+CSE 5404	Special Topics in Computer Science Theory	3
+CSE 5406	Computational Geometry	3
+CSE 5504	Geometric Computing for Biomedicine	3
+CSE 5505	Adversarial AI	3
+CSE 5509	Computer Vision	3
+CSE 5519	Advances in Computer Vision	3
+CSE 5610	Large Language Models	3
+CSE 5801	Approximation Algorithms	3
+CSE 5804	Algorithms for Biosequence Comparison	3
+CSE 5807	Algorithms for Computational Biology	3
+ESE 5130	Large-Scale Optimization for Data Science	3
+Mathematics
+Course List
+Code	Title	Units
+MATH 3410	Introduction to Combinatorics	3
+MATH 3420	Graph Theory	3
+MATH 3590	Topics in Applied Mathematics	3
+MATH 4101	Introduction to Analysis	3
+MATH 4102	Introduction to Lebesgue Integration	3
+MATH 4150	Introduction to Fourier Series and Integrals	3
+MATH 4201	Topology I	3
+MATH 4220	An Introduction to Differential Geometry	3
+MATH 4301	Linear Algebra	3
+MATH 4302	Modern Algebra	3
+MATH 4350	Number Theory and Cryptography	3
+MATH 4493	Topics in Graph Theory	3
+MATH 4501	Numerical Applied Mathematics	3
+MATH 4502	Topics in Applied Mathematics	3
+MATH 4560	Topics in Financial Mathematics	3
+MATH 4570	The Mathematics of Quantum Theory	3
+SDS 4010	Probability	3
+SDS 4720	Stochastic Processes	3
+Statistics and Data Science
+Course List
+Code	Title	Units
+SDS 4010	Probability *	3
+SDS 4020	Mathematical Statistics	3
+SDS 4110	Experimental Design	3
+SDS 4120	Survival Analysis	3
+SDS 4130	Linear Statistical Models	3
+SDS 4140	Advanced Linear Statistical Models	3
+SDS 4155	Time Series Analysis	3
+SDS 4210	Statistical Computation	3
+SDS 4310	Bayesian Statistics	3
+SDS 4430	Statistical Learning	3
+SDS 4440	Mathematical Foundations of Data Science	3
+SDS 4720	Stochastic Processes *	3
+*
+This course may be counted as a Mathematics elective.
+
+Electrical & Systems Engineering
+Course List
+Code	Title	Units
+ESE 4031	Optimization for Engineered Planning, Decisions and Operations	3
+ESE 4150	Optimization	3
+ESE 4170	Introduction to Machine Learning and Pattern Classification	3
+ESE 4270	Financial Mathematics	3
+ESE 4290	Basic Principles of Quantum Optics and Quantum Information	3
+ESE 5130	Large-Scale Optimization for Data Science *	3
+ESE 5200	Probability and Stochastic Processes	3
+*
+This course may be counted as a Computer Science & Engineering elective.
+
+Economics
+Course List
+Code	Title	Units
+ECON 4151	Applied Econometrics	3
+ECON 4710	Game Theory	3
+Linguistics
+Course List
+Code	Title	Units
+LING 3250	Introduction to Computational Linguistics	3
+LING 4250	Computation and Learnability in Linguistic Theory	3
+Biomedical Engineering
+Course List
+Code	Title	Units
+BME 4400	Biomedical Data Science	3
+BME 4700	Mathematics of Imaging Science	3
+BME 5720	Biological Neural Computation	3
+ Physics
+Course List
+Code	Title	Units
+PHYSICS 4027	Introduction to Computational Physics	3
+
+
+3. Additional Departmental Requirements:
+Course List
+Code	Title	Units
+ENGR 3100	Technical Writing	3
+One themed writing course from the College Writing Program	3
+Humanities and social sciences electives	18
+Natural sciences electives	8
+
+
+information from given url 2:
+
+Second Major in Financial Engineering (ESE):
+
+1. Background Coursework	15
+CSE 1301	Introduction to Computer Science	3
+ESE 3260	Probability and Statistics for Engineering	3
+or SDS 3200
+Elementary to Intermediate Statistics and Data Analysis
+or DAT 1201
+Managerial Statistics II
+or ECON 3150
+Introduction to Econometrics
+or ECON 4150
+Introduction to Econometrics With Writing
+or SDS 4130
+Linear Statistical Models
+or SDS 4010
+Probability
+MATH 2500	Differential Equations	3
+or ESE 2170
+Differential Equations and Dynamical Systems Modeling in Engineering
+or MATH 3520
+Differential Equations and Dynamical Systems
+MATH 2130	Calculus III	3
+MATH 3300	Matrix Algebra	3
+or ESE 2180
+Linear Algebra and Component Analysis
+or MATH 4301
+Linear Algebra
+
+
+2. electives:
+
+Students must complete 15 Engineering units. At least 6 of those units must be from the Engineering Core Courses:
+
+Course List
+Code	Title	Units
+Engineering Core Courses	
+ESE 4150	Optimization	3
+ESE 4170	Introduction to Machine Learning and Pattern Classification	3
+or CSE 4107
+Introduction to Machine Learning
+ESE 4261	Statistical Methods for Data Analysis With Applications to Financial Engineering	3
+ESE 4270	Financial Mathematics	3
+Engineering Elective Courses	
+CSE 2407	Data Structures and Algorithms	3
+ESE 4031	Optimization for Engineered Planning, Decisions and Operations	3
+ESE 5130	Large-Scale Optimization for Data Science	3
+ESE 5200	Probability and Stochastic Processes	3
+
+
+Students must complete 15 Olin Business units, including all 9 units of Olin Professional Core Courses and 6 elective units.
+
+Course List
+Code	Title	Units
+Olin Professional Core Courses	9
+ACCT 2610	Principles of Financial Accounting	3
+FIN 3150	Capital Markets and Financial Management	3
+FIN 4410	Investments	3
+Olin Electives	6
+FIN 4506	Financial Technology: Methods and Practice	3
+FIN 4510	Options, Futures and Derivative Securities	3
+FIN 4370	Advanced Derivative Securities	3
+FIN 5017	Quantitative Risk Management	3
+FIN 5018	Topics in Quantitative Finance	1.5
+FIN 5321	Data Analysis for Investments	1.5
+FIN 5390	Mathematical Finance	1.5
+FIN 5520	Fixed Income Derivatives	1.5
+1
+At least one of FIN 4510 or ESE 4270 must be taken to complete the second major. ESE 4270, if taken after FIN 3150, can be used to satisfy the FIN 4510 prerequisite of Olin elective courses.
+
+
+
+
+
+***my approach:
+for these 2 majors, we can view them as a combination of core requirement, elective requirement, and department requirement.
+And the correct logic is to check for unions in each 3 sections: the union of core requirements (the minimum courses that satisfy both core requirements) the union of elective requirements  (the minimum courses that satisfy both elective requirements)
+and the department requirements (the mimimum courses that satisfies both department requirement)
+***note that core requirements are not always named as core, and some majors may not have department requirements. 
+
+1. for core requirements: 
+For the first major cs+math:
+the core requirements are:
+SE 1301	Introduction to Computer Science	(3 credits)
+CSE 2400	Logic and Discrete Mathematics **	(3 credits)
+CSE 2407	Data Structures and Algorithms	(3 credits)
+CSE 3407	Analysis of Algorithms	(3 credits)
+MATH 1510	Calculus I **	(3 credits)
+MATH 1520	Calculus II **	(3 credits)
+MATH 2130	Calculus III **	(3 credits)
+MATH 3010 Foundations for Higher Mathematics ** or MATH 3015 Foundations for Higher Mathematics With Writing **	(3 credits)
+MATH 3300	Matrix Algebra **	(3 credits)
+SDS 3020 Elementary to Intermediate Statistics and Data Analysis or SDS 3030 Statistics for Data Science I or ESE 3260 Probability and Statistics for Engineering	(3 credits)
+Total Units	30
+
+Second Major in Financial Engineering (ESE):
+
+1. Background Coursework	15
+CSE 1301	Introduction to Computer Science	3
+ESE 3260	Probability and Statistics for Engineering	3
+or SDS 3200
+Elementary to Intermediate Statistics and Data Analysis
+or DAT 1201
+Managerial Statistics II
+or ECON 3150
+Introduction to Econometrics
+or ECON 4150
+Introduction to Econometrics With Writing
+or SDS 4130
+Linear Statistical Models
+or SDS 4010
+Probability
+MATH 2500	Differential Equations	3
+or ESE 2170
+Differential Equations and Dynamical Systems Modeling in Engineering
+or MATH 3520
+Differential Equations and Dynamical Systems
+MATH 2130	Calculus III	3
+MATH 3300	Matrix Algebra	3
+or ESE 2180
+Linear Algebra and Component Analysis
+or MATH 4301
+Linear Algebra
+
+
+
+for the core requirements of both majors, we can find that if we take:
+SE 1301	Introduction to Computer Science	(3 credits)
+CSE 2400	Logic and Discrete Mathematics **	(3 credits)
+CSE 2407	Data Structures and Algorithms	(3 credits)
+CSE 3407	Analysis of Algorithms	(3 credits)
+MATH 1510	Calculus I **	(3 credits)
+MATH 1520	Calculus II **	(3 credits)
+MATH 2130	Calculus III **	(3 credits)
+MATH 3010 Foundations for Higher Mathematics (3 credits)
+MATH 3300	Matrix Algebra **	(3 credits)
+SDS 3200 Elementary to Intermediate Statistics and Data Analysis (3 credits)
+
+and
+
+MATH 2500	Differential Equations	(3 credits)
+
+
+we satisfy the core requirements for both majors.
+
+
+*** apply this logic to the electives and department requirement, return the minimum electives and department requirement courses that satisfy both majors.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

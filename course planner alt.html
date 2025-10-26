@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WUSTL Course Analyzer</title>
+  
+  <!-- 1. Load Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 2. Load React and ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  
+  <!-- 3. Load Babel to compile JSX in the browser -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- 4. Add the Inter font used in the app -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- 5. Configure Tailwind to use the Inter font -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-slate-100">
+  <!-- This is where the React app will be rendered -->
+  <div id="root"></div>
+
+  <!-- 6. This script contains your React app. -->
+  <!-- We set the type to "text/babel" so Babel can compile it. -->
+  <script type="text/babel">
+    // Make sure React and useState are available
+    const { useState } = React;
+
+    /**
+     * A simple rotating spinner icon for loading states.
+     */
+    const SpinnerIcon = () => (
+      <svg
+        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+    );
+
+    /**
+     * The main application component.
+     */
+    function App() {
+      // State for the 5 URL inputs
+      const [urls, setUrls] = useState(Array(5).fill(''));
+      const [isLoading, setIsLoading] = useState(false);
+      const [result, setResult] = useState('');
+      const [error, setError] = useState('');
+
+      /**
+       * Updates the state for a specific URL input.
+       */
+      const handleUrlChange = (index, value) => {
+        // Clear error when user starts typing
+        if (error) setError('');
+        if (result) setResult('');
+
+        const newUrls = [...urls];
+        newUrls[index] = value;
+        setUrls(newUrls);
+      };
+
+      /**
+       * Validates if a given string is a valid URL from the wustl.edu domain.
+       */
+      const isValidWustlUrl = (url) => {
+        if (!url) return false; // Ignore empty strings
+        try {
+          const parsedUrl = new URL(url);
+          return parsedUrl.hostname.endsWith('wustl.edu');
+        } catch (e) {
+          return false; // Invalid URL format
+        }
+      };
+
+      /**
+       * A wrapper for fetch that includes exponential backoff for retries.
+       */
+      const fetchWithBackoff = async (url, options, retries = 3, delay = 1000) => {
+        for (let i = 0; i < retries; i++) {
+          try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          } catch (err) {
+            if (i === retries - 1) throw err; // Last retry failed
+            await new Promise(res => setTimeout(res, delay * Math.pow(2, i)));
+          }
+        }
+      };
+
+      /**
+       * Handles the form submission to call the Gemini API.
+       */
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setResult('');
+        setIsLoading(true);
+
+        const activeUrls = urls.filter(url => url.trim() !== '');
+
+        if (activeUrls.length === 0) {
+          setError('Please enter at least one URL.');
+          setIsLoading(false);
+          return;
+        }
+
+        // Validate all active URLs
+        const invalidUrls = activeUrls.filter(url => !isValidWustlUrl(url));
+        if (invalidUrls.length > 0) {
+          setError('All provided URLs must be valid and from the wustl.edu domain.');
+          setIsLoading(false);
+          return;
+        }
+
+        // --- Gemini API Call ---
+        const apiKey = "AIzaSyAeNU_ROiqkgDQp6hoU1sdfjytoCuhfzcs"; // Leave as-is, will be populated by the environment
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        // THIS IS THE NEW, SOPHISTICATED PROMPT
+        const systemPrompt = `You are an expert academic advisor bot for Washington University.
+Your task is to analyze degree requirements from the provided 'wustl.edu' bulletin URLs.
+You must return a single, optimized, combined list of the *minimum courses and credits* required to satisfy *all* majors listed (the "union").
+
+**Important First Step: Identify Requirement Blocks**
+For each major, you must first identify *all* sections that constitute its total requirements.
+* **"Total Core":** Group all 'Core' or foundational sections together. For example, for the 'CS BS' (cse-computer-science-bs), the "Total Core" is the sum of "Computer Science Core Requirements" AND "Math Requirements."
+* **"Total Electives":** Group all 'Elective' sections. For the 'CS BS', this is the sum of "Systems Requirement" (a 3-unit choice), "Methods Requirement" (a 3-unit choice), AND "Computer Science Technical Elective Requirements" (15 units).
+* **"Additional Requirements":** Group all other requirements (e.g., Natural Sciences, Humanities, Writing).
+
+Once you have these "Total" blocks for each major, perform the union analysis:
+
+**1. Combined Core Requirements Analysis:**
+* Analyze the "Total Core" lists from all majors.
+* List all specific, unique courses required by *any* major (e.g., if M1 needs MATH 101, list it, even if M2 doesn't).
+* For "OR" choice groups (e.g., "choose one of [A, B, C]"):
+    * First, check if any course in that group (e.g., [A, B, C]) is *also* required (as core, elective, or in another "OR" group) by *another* major.
+    * **If overlap exists (e.g., course 'B' is also in M2's list):** The final list should include *only* this optimal course (e.g., "ESE 3260").
+    * **If no overlap exists:** The final list should include *one* of the courses from the group (e.g., "MATH 3010").
+* **Core/Elective Overlap:** If a course is "Core" for one major and "Elective" for another (e.g., CSE 2407), it MUST be listed in the "Combined Core Requirements" section.
+
+**2. Combined Elective Requirements Analysis:**
+* Analyze the "Total Elective" lists from all majors.
+* **Specific Elective Categories:** First, list the union of *specific* elective categories (e.g., "1 Systems course," "1 Methods course"). For these, list one example course that satisfies the requirement (e.g., "* CSE 361S Introduction to Systems Software (3 units)").
+* **General Elective Credits:** Second, list the union of *general* elective credits. For 'CS BS', it's "15 units of Technical Electives." For 'Statistics BA', it's "9 units of Statistics Electives."
+* **Optimal Elective Overlaps:** When a single course can satisfy requirements for multiple majors (e.g., CSE 417 for CS 'Methods' and 'Stats Elective'), list that course. It will count toward the total units for both.
+
+**3. Combined Additional Requirements Analysis:**
+* List the union of all other requirements (e.g., "Technical Writing," "Humanities," "Natural Sciences").
+* If M1 requires 18 Humanities credits and M2 requires 9, the union requirement is the *maximum*: 18 credits.
+
+**Final Output Format:**
+* You MUST only return the final, optimized list of courses.
+* Do NOT include any explanatory text, reasoning, "Optimal Choice," or "Optimal Overlap" notes.
+* The output MUST strictly follow this format:
+
+**Combined Core Requirements**
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* ...
+
+**Combined Elective Requirements**
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* ...
+
+**Combined Additional Requirements**
+* [REQUIREMENT_NAME] ([UNITS] units)
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* ...
+
+* For "OR" choices where no overlap was found, just list one of the valid courses (e.g., "* MATH 3010 Foundations for Higher Mathematics (3 units)").
+* For category requirements (like Humanities), list the name and total units (e.g., "* Humanities & Social Sciences (18 units)").`;
+
+        const userQuery = `Find the union of all required courses (most efficient path) from the following URLs:
+${activeUrls.join('\n')}`;
+
+        const payload = {
+          contents: [{ parts: [{ text: userQuery }] }],
+          // Use Google Search grounding to allow the model to fetch and read the URLs
+          tools: [{ "google_search": {} }],
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
+        };
+
+        try {
+          const data = await fetchWithBackoff(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+          if (text) {
+            setResult(text);
+          } else {
+            console.error("No text in API response:", data);
+            setError('Could not parse the API response. Please try again.');
+          }
+        } catch (err)
+ {
+          console.error('API call failed:', err);
+          setError(`An error occurred while fetching data: ${err.message}`);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      return (
+        <div className="min-h-screen bg-slate-100 p-4 sm:p-8 flex items-center justify-center font-inter">
+          <main className="w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden">
+            <div className="p-6 sm:p-10">
+              <h1 className="text-3xl font-bold text-slate-800 mb-2">
+                WUSTL Course Analyzer
+              </h1>
+              <p className="text-slate-600 mb-6">
+                Enter up to 5 WUSTL bulletin URLs to find the most efficient path to complete all majors.
+              </p>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {urls.map((url, index) => (
+                  <div key={index}>
+                    <label htmlFor={`url-${index}`} className="block text-sm font-medium text-slate-700 mb-1">
+                      Major URL {index + 1}
+                    </label>
+                    <input
+                      type="url"
+                      id={`url-${index}`}
+                      value={url}
+                      onChange={(e) => handleUrlChange(index, e.target.value)}
+                      placeholder="https://bulletin.wustl.edu/..."
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                      disabled={isLoading}
+                    />
+                  </div>
+                ))}
+
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-slate-400 disabled:cursor-not-allowed transition"
+                >
+                  {isLoading ? (
+                    <React.Fragment>
+                      <SpinnerIcon />
+                      Analyzing...
+                    </React.Fragment>
+                  ) : (
+                    'Find Most Efficient Path'
+                  )}
+                </button>
+              </form>
+
+              {/* --- Results Display --- */}
+              {error && (
+                <div className="mt-6 p-4 bg-red-100 border border-red-300 text-red-800 rounded-md">
+                  <p className="font-semibold">Error</p>
+                  <p>{error}</p>
+                </div>
+              )}
+
+              {result && (
+                <div className="mt-6">
+                  <h2 className="text-xl font-semibold text-slate-800 mb-3">
+                    Optimized Course Path (Union)
+                  </h2>
+                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-md">
+                    {/* REMOVED the dangerouslySetInnerHTML div which was not rendering HTML correctly.
+                      The <pre> tag is the simplest and most reliable way to display 
+                      the pre-formatted text (including newlines and bullet points) 
+                      that comes from the API.
+                    */}
+                     <pre className="text-slate-700 whitespace-pre-wrap font-inter text-sm">
+                       {result}
+                     </pre>
+                  </div>
+                </div>
+              )}
+            </div>
+          </main>
+        </div>
+      );
+    }
+    
+    // 7. Find the root DOM element and render the React App into it.
+    // Note: We use React.createElement(App) because we are not in a full JSX context here.
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(App));
+    
+  </script>
+</body>
+</html>
+
+
