@@ -149,10 +149,11 @@
         }
 
         // --- Gemini API Call ---
-        const apiKey = "AIzaSyAeNU_ROiqkgDQp6hoU1sdfjytoCuhfzcs"; // Leave as-is, will be populated by the environment
+        // Using the API key from the user's provided file
+        const apiKey = "AIzaSyAeNU_ROiqkgDQp6hoU1sdfjytoCuhfzcs"; 
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
-        // THIS IS THE NEW, SOPHISTICATED PROMPT
+        // THIS IS THE UPDATED, STRICT-FORMAT PROMPT
         const systemPrompt = `You are an expert academic advisor bot for Washington University.
 Your task is to analyze degree requirements from the provided 'wustl.edu' bulletin URLs.
 You must return a single, optimized, combined list of the *minimum courses and credits* required to satisfy *all* majors listed (the "union").
@@ -170,27 +171,42 @@ Once you have these "Total" blocks for each major, perform the union analysis:
 * List all specific, unique courses required by *any* major (e.g., if M1 needs MATH 101, list it, even if M2 doesn't).
 * For "OR" choice groups (e.g., "choose one of [A, B, C]"):
     * First, check if any course in that group (e.g., [A, B, C]) is *also* required (as core, elective, or in another "OR" group) by *another* major.
-    * **If overlap exists (e.g., course 'B' is also in M2's list):** List that overlapping course (e.g., "Take ESE 3260") as the optimal choice. Clearly state which requirements it satisfies for *all* relevant majors.
-    * **If no overlap exists:** The requirement is to take one course from that group. List one course as the example (e.g., "Take MATH 3010 (or 3015)").
-* **Core/Elective Overlap:** If a course is "Core" for one major and "Elective" for another (e.g., CSE 2407), list it as a Core requirement and add a note: "(This also satisfies an elective requirement for [Other Major])."
+    * **If overlap exists (e.g., course 'B' is also in M2's list):** The final list should include *only* this optimal course (e.g., "ESE 3260").
+    * **If no overlap exists:** The final list should include *one* of the courses from the group (e.g., "MATH 3010").
+* **Core/Elective Overlap:** If a course is "Core" for one major and "Elective" for another (e.g., CSE 2407), it MUST be listed in the "Combined Core Requirements" section.
 
 **2. Combined Elective Requirements Analysis:**
 * Analyze the "Total Elective" lists from all majors.
-* **Specific Elective Categories:** First, list the union of *specific* elective categories. For CS BS, this is "1 Systems course" and "1 Methods course." List the choices for each.
-* **General Elective Credits:** Second, list the union of *general* elective credits. For CS BS, it's "15 units of Technical Electives." For 'Statistics BA', it's "9 units of Statistics Electives."
-* **Crucially: Optimal Elective Overlaps:** After listing the distinct structures, create a sub-section called "Optimal Elective Overlaps." In this section, identify and list all *potential course overlaps* between the different elective lists.
-    * Example: "A course like CSE 417 (Machine Learning) can satisfy the CS 'Methods Requirement' AND a 'Statistics Elective' requirement."
-    * Example: "Courses from the FinEng 'Engineering Core' list (like ESE 4150) can also be used to satisfy the CS+Math 'CSE Elective' requirement."
-* **Special Rules:** Note any special rules, like the \`FIN 4510\` / \`ESE 4270\` requirement for FinEng, and identify the most efficient way to satisfy it (e.g., "Take ESE 4270, as it also counts for the CS+Math 'Math Elective'").
+* **Specific Elective Categories:** First, list the union of *specific* elective categories (e.g., "1 Systems course," "1 Methods course"). For these, list one example course that satisfies the requirement (e.g., "* CSE 361S Introduction to Systems Software (3 units)").
+* **General Elective Credits:** Second, list the union of *general* elective credits. For 'CS BS', it's "15 units of Technical Electives." For 'Statistics BA', it's "9 units of Statistics Electives."
+* **Optimal Elective Overlaps:** When a single course can satisfy requirements for multiple majors (e.g., CSE 417 for CS 'Methods' and 'Stats Elective'), list that course. It will count toward the total units for both.
 
 **3. Combined Additional Requirements Analysis:**
 * List the union of all other requirements (e.g., "Technical Writing," "Humanities," "Natural Sciences").
 * If M1 requires 18 Humanities credits and M2 requires 9, the union requirement is the *maximum*: 18 credits.
 
 **Final Output Format:**
-* Use Markdown for clear formatting (bold headers, bullet points).
-* Use the headers "Combined Core Requirements," "Combined Elective Requirements," and "Combined Additional Requirements."
-* Be concise and clear, as if advising a student on the most efficient path to a dual degree.`;
+* You MUST only return the final, optimized list of courses.
+* Do NOT include any explanatory text, reasoning, "Optimal Choice," or "Optimal Overlap" notes.
+* The output MUST strictly follow this format:
+
+**Combined Core Requirements**
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* ...
+
+**Combined Elective Requirements**
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* ...
+
+**Combined Additional Requirements**
+* [REQUIREMENT_NAME] ([UNITS] units)
+* [COURSE_ID] [COURSE_NAME] ([UNITS] units)
+* ...
+
+* For "OR" choices where no overlap was found, just list one of the valid courses (e.g., "* MATH 3010 Foundations for Higher Mathematics (3 units)").
+* For category requirements (like Humanities), list the name and total units (e.g., "* Humanities & Social Sciences (18 units)").`;
 
         const userQuery = `Find the union of all required courses (most efficient path) from the following URLs:
 ${activeUrls.join('\n')}`;
@@ -236,7 +252,7 @@ ${activeUrls.join('\n')}`;
                 WashU Course Analyzer
               </h1>
               <p className="text-slate-600 mb-6">
-                Enter up to 5 WashU bulletin URLs to find the most efficient path to complete all majors.
+                Enter up to 5 <a href="https://bulletin.wustl.edu/undergrad/majors/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 underline">WashU bulletin URLs</a> to find the most efficient path to complete all majors.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -298,6 +314,11 @@ ${activeUrls.join('\n')}`;
                   </div>
                 </div>
               )}
+
+              <p className="text-center text-xs text-slate-400 mt-8">
+                Created by Rick Rong and Yanis Leng
+              </p>
+              
             </div>
           </main>
         </div>
@@ -313,3 +334,7 @@ ${activeUrls.join('\n')}`;
 </body>
 </html>
 
+
+
+
+ss
